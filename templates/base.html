@@ -3,37 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Smart Inventory Manager{% endblock %}</title>
+    <title>Smart Inventory Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    {% block additional_css %}{% endblock %}
+    
+    <style>
+    body {
+        background: url("/static/Images/InventoryBg.png") center/cover fixed;
+        min-height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
+    .navbar {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px);
+    }
+    
+    .hero-section {
+       
+        display: flex;
+      
+        justify-content: center;
+    
+        color: white;
+        flex-direction: column;
+        height: 100vh;
+        align-items: center;
+            padding-top: 150px; /* adjust based on navbar height */
+padding-bottom: 100px;
+margin: 0;
+
+        min-height: 100vh ;
+    } 
+    
+    .hero-des{
+        font-size: large;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    .btn-get-started {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+        padding: 1.2rem 2.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        position:relative;
+        bottom:-50px;
+        
+        
+    } 
+    </style>
+    {% block head_extra %}{% endblock %}
+
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+    <!-- Navbar -->
+    <!-- <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">
-                <i class="fas fa-warehouse text-primary"></i> Smart Inventory Manager
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-warehouse"></i> Smart Inventory Manager
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/">Dashboard</a>
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/dashboard">Dashboard</a>
                 <a class="nav-link" href="/store-analysis">Store Analysis</a>
                 <a class="nav-link" href="/salespredictions">Sales Predictions</a>
                 <a class="nav-link" href="/smart-restocking">Smart Restocking</a>
                 <a class="nav-link" href="/customer-delivery">Customer Delivery</a>
                 <a class="nav-link" href="/business-reports">Business Reports</a>
+
             </div>
         </div>
-    </nav>
+    </nav> -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <i class="fas fa-warehouse"></i> Smart Inventory Manager
+    </a>
 
-    <!-- Page Content -->
-    <div style="margin-top: 80px;">
-        {% block content %}{% endblock %}
+    <!-- Hamburger button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link" href="/store-analysis">Store Analysis</a>
+        <a class="nav-link" href="/salespredictions">Sales Predictions</a>
+        <a class="nav-link" href="/smart-restocking">Smart Restocking</a>
+        <a class="nav-link" href="/customer-delivery">Customer Delivery</a>
+        <a class="nav-link" href="/business-reports">Business Reports</a>
+      </div>
     </div>
+  </div>
+</nav>
+
+
+    <!-- Content Block -->
+    {% block content %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {% block additional_js %}{% endblock %}
+
 </body>
 </html>

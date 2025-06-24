@@ -1,4 +1,4 @@
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,12 +12,12 @@
 </head>
 <body>
   <div class="container py-5">
-    <!-- Header -->
+    
     <div class="card mb-4 p-4 text-center">
       <h2>📦 EOQ Inventory Simulation</h2>
     </div>
 
-    <!-- Controls -->
+    
     <div class="row mb-3 justify-content-center">
       <div class="col-md-4">
         <label for="storeFilter" class="form-label">Filter by Store ID:</label>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <!-- Status -->
+   
     <div id="loading" class="text-center text-muted mb-3" style="display:none;">
       🔄 Simulating... Please wait.
     </div>
@@ -39,7 +39,7 @@
 
 
   
-<!-- 📦 Inventory Summary -->
+
 <div id="summaryText" class="card text-dark bg-light mb-4 p-3 d-none">
   <h5 class="mb-3">📊 Inventory Status Summary</h5>
   <div class="d-flex justify-content-around text-center">
@@ -64,7 +64,7 @@
 
 
 
-    <!-- Table -->
+    
     <div id="simulationResultWrapper" style="display:none;">
       <table class="table table-bordered text-center" id="resultTable">
         <thead class="table-dark">
@@ -81,13 +81,13 @@
 
 
       
-<!-- 🔄 Restocking Info -->
+
 <div id="restockingText" class="alert alert-secondary mt-3 d-none">
   Restocking forecast is displayed in the chart below.
 </div>
 
 
-      <!-- Chart -->
+
       <canvas id="forecastChart" width="600" height="300" class="mt-4"></canvas>
 
     </div>
@@ -96,6 +96,20 @@
 
   <script src="/static/script.js"></script>
 </body>
-</html>
+</html> -->
 
+{% extends "base.html" %}
 
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="Main-heading">Transform Your Retail Chain:</h1>
+        <h1>From Warehouse to Doorstep</h1>
+        <p class="hero-des">Optimize inventory, predict demand, and streamline your entire supply chain</p>
+        
+    </div>
+    <a href="/dashboard" class="btn-get-started">
+            <i class="fas fa-rocket"></i> Get Started
+        </a>
+</div>
+{% endblock %}

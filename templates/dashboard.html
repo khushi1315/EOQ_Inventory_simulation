@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - All Stores Overview{% endblock %}
+
+{% block content %}
+<div class="container_dashboard">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="dashboard-card text-center">
+                <h2><i class="fas fa-chart-line"></i> Supply Chain Dashboard</h2>
+                <p class="text-muted">Overview of all stores and inventory performance</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Row -->
+    <div class="MetricsRow my-3">
+        <div class="col-md-3">
+            <div class="mat-card text-center">
+                <h3><i class="fas fa-store text-primary"></i></h3>
+                <h4 id="totalStores">0</h4>
+                <p>Total Stores</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mat-card text-center">
+                <h3><i class="fas fa-boxes text-info"></i></h3>
+                <h4 id="totalProducts">0</h4>
+                <p>Total Products</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mat-card text-center">
+                <h3><i class="fas fa-exclamation-triangle text-danger"></i></h3>
+                <h4 id="totalOutOfStock">0</h4>
+                <p>Out of Stock</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mat-card text-center">
+                <h3><i class="fas fa-dollar-sign text-success"></i></h3>
+                <h4 id="totalValue">$0</h4>
+                <p>Inventory Value</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="ChartRow mb-4">
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5>Store Performance</h5>
+                <canvas id="storePerformanceChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5>Stock Status Distribution</h5>
+                <canvas id="stockStatusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="Quickrow">
+          <h5>Quick Actions</h5>
+        <div class="col-12">
+            <div class="quick-card col-12">
+              
+                
+                    <div class="colQuick text-center">
+                        <a href="/store-analysis" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-search"></i> Analyze Individual Store
+                        </a>
+                    </div>
+                    <div class="colQuick text-center">
+                        <a href="/sales-predictions" class="btn btn-outline-info w-100 mb-2">
+                            <i class="fas fa-crystal-ball"></i> Sales Predictions
+                        </a>
+                    </div>
+                    <div class="colQuick text-center">
+                        <a href="/smart-restocking" class="btn btn-outline-success w-100 mb-2">
+                            <i class="fas fa-boxes"></i> Smart Restocking
+                        </a>
+                    </div>
+                    <div class="colQuick text-center">
+                        <a href="/business-reports" class="btn btn-outline-warning w-100 mb-2">
+                            <i class="fas fa-chart-bar"></i> Business Reports
+                        </a>
+                    </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+{% endblock %}
+{% block additional_js %}
+
+<script>
+// Load dashboard data
+document.addEventListener('DOMContentLoaded', function() {
+    loadDashboardData();
+});
+
+function loadDashboardData() {
+    fetch('/dashboard-data')
+        .then(response => response.json())
+        .then(data => {
+            // Update metrics
+            document.getElementById('totalStores').textContent = data.total_stores;
+            document.getElementById('totalProducts').textContent = data.total_products;
+            document.getElementById('totalOutOfStock').textContent = data.out_of_stock;
+            document.getElementById('totalValue').textContent = '$' + data.total_value.toLocaleString();
+
+            // Create charts
+            createStorePerformanceChart(data.store_performance);
+            createStockStatusChart(data.stock_status);
+        })
+        .catch(error => console.error('Error loading dashboard data:', error));
+}
+
+function createStorePerformanceChart(data) {
+    const ctx = document.getElementById('storePerformanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Total Products',
+                data: data.values,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Products per Store'
+                }
+            }
+        }
+    });
+}
+
+function createStockStatusChart(data) {
+    const ctx = document.getElementById('stockStatusChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Healthy Stock', 'Low Stock', 'Out of Stock'],
+            datasets: [{
+                data: [data.healthy, data.low, data.out],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(220, 53, 69, 0.8)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Overall Stock Status'
+                }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

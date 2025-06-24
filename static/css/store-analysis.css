@@ -1,0 +1,45 @@
+
+#summaryText {
+    border-radius: 0.75rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    background: #f0f9ff;
+    border-left: 6px solid #0d6efd;
+    
+  }
+  
+  #summaryText h5 {
+    font-weight: 600;
+    color: #0d6efd;
+  }
+  
+  #summaryText .badge {
+    padding: 10px 16px;
+    border-radius: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  #summaryText h6 {
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  
+        
+
+  body {
+    background-color: #9d9de7;
+    color: #000000;
+  }
+  
+  .card, .container, .table {
+    background-color: #ccccf8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .btn-primary {
+    background-color: #4dd0e1;
+    border-color: #4dd0e1;
+    color: #1e1e2f;
+  } 

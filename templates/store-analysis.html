@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Store Analysis - Individual Store Performance{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header -->
+    <div class="card mb-4 p-4 text-center">
+        <h2><i class="fas fa-store"></i> Store Analysis - Individual Performance</h2>
+        <p class="text-muted">Analyze specific store inventory and performance metrics</p>
+    </div>
+
+    
+    <div class="row mb-3 justify-content-center">
+        <div class="col-md-4">
+            <label for="storeFilter" class="form-label">Select Store ID for Analysis:</label>
+            <select id="storeFilter" class="form-select">
+                <option value="">All Store</option>
+            </select>
+            
+        </div>
+        <div class="col-md-2 align-self-end">
+            <button class="btn btn-primary w-100" id="runBtn">Analyze Store</button>
+        </div>
+    </div>
+    
+
+    <!-- Status -->
+    <div id="loading" class="text-center text-muted mb-3" style="display:none;">
+        🔄 Analyzing store data... Please wait.
+    </div>
+    <div id="error" class="text-danger text-center mb-3"></div>
+
+    <!-- Inventory Summary - Exactly like your working version -->
+    <div id="summaryText" class="card text-dark bg-light mb-4 p-3 d-none">
+        <h5 class="mb-3">📊 Store Inventory Status</h5>
+        <div class="d-flex justify-content-around text-center">
+            <div>
+                <h6>Total Products</h6>
+                <span class="badge bg-primary fs-5" id="totalProducts">0</span>
+            </div>
+            <div>
+                <h6>🟥 Out of Stock</h6>
+                <span class="badge bg-danger fs-5" id="outOfStock">0</span>
+            </div>
+            <div>
+                <h6>🟨 Low Stock (&lt;20)</h6>
+                <span class="badge bg-warning text-dark fs-5" id="lowStock">0</span>
+            </div>
+            <div>
+                <h6>🟩 Healthy Stock</h6>
+                <span class="badge bg-success fs-5" id="healthyStock">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table and Chart - Exactly like your working version -->
+    <div id="simulationResultWrapper" style="display:none;">
+        <table class="table table-bordered text-center" id="resultTable">
+            <thead class="table-dark">
+                <tr>
+                    <th>Product ID</th>
+                    <th>Store ID</th>
+                    <th>Stock Levels</th>
+                    <th>Order Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        <div id="paginationControls" class="d-flex justify-content-center my-3"></div>
+
+        <!-- Restocking Info -->
+        <div id="restockingText" class="alert alert-secondary mt-3 d-none">
+            Restocking recommendations are displayed in the chart below.
+        </div>
+
+        <!-- Chart -->
+        <canvas id="forecastChart" width="600" heighsumt="300" class="mt-4"></canvas>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="stylesheet" href="/static/css/store-analysis.css">
+<script src="/static/store-analysis.js"></script>
+
+{% endblock %}
