@@ -28,18 +28,22 @@
         
 
   body {
-    background-color: #9d9de7;
+   
     color: #000000;
   }
   
-  .card, .container, .table {
-    background-color: #ccccf8;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-  
+
   .btn-primary {
     background-color: #4dd0e1;
     border-color: #4dd0e1;
     color: #1e1e2f;
   } 
+.form-label{
+      margin-bottom: .5rem;
+    font-size: x-large;
+    color: #ffffff;
+    font-family: auto;
+}
+.StoreChart{
+background-color:#020202c4;
+}
