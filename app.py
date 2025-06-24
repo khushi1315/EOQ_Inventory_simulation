@@ -62,6 +62,15 @@ def store_analysis():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+@app.route('/customer-delivery')
+def customer_delivery():
+    return "COMING SOON";
+@app.route('/salespredictions')
+def sales_prediction():
+    return "COMING SOON";
+@app.route('/business-reports')
+def business_reports():
+    return "COMING SOON";
 
 @app.route('/get_store_ids')
 def get_store_ids():
