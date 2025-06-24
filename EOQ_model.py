@@ -84,13 +84,3 @@ def simulate_inventory(df_inventory, steps=10):
         df_inventory = df_inventory.set_index(["Product ID", "Store ID"])
 
     return df_inventory.reset_index()[["Product ID", "Store ID", "Stock Levels", "Order_Quantity"]]
-
-
-
-
-
-
-
-
-
-
