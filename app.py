@@ -64,19 +64,29 @@ def dashboard():
     return render_template('dashboard.html')
 @app.route('/customer-delivery')
 def customer_delivery():
-    return "COMING SOON";
+    return render_template('/customer-delivery.html');
 @app.route('/salespredictions')
 def sales_prediction():
-    return "COMING SOON";
+    return render_template('/salespredictions.html')
+
 @app.route('/business-reports')
 def business_reports():
-    return "COMING SOON";
+    return render_template('/business-reports.html');
+
+@app.route('/smart-restocking')
+def smart_restocking():
+    return render_template('/smart-restocking.html');
 
 @app.route('/get_store_ids')
 def get_store_ids():
     inventory_df = pd.read_csv("inventory_monitoring.csv")
     store_ids = sorted(inventory_df["Store ID"].unique().tolist())
     return jsonify(store_ids)
+
+@app.route('/sales-data')
+def sales_data():
+    df = pd.read_csv('predicted_sales.csv')
+    return jsonify(df.to_dict(orient='records'))
 
 
 @app.route('/simulate')

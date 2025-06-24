@@ -1,1 +1,382 @@
 {% extends "base.html" %}
+
+{% block title %}Sales Prediction Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Main Dashboard Title -->
+    <div class="container py-5">
+        <div class="salesCard text center">
+        <h2>📈 Sales Prediction Dashboard</h2>
+        <p class="subtitle">Forecast sales trends with data-driven insights</p>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="store-product-info">
+            <h2 id="storeProductTitle">📦 Store - | Product -</h2>
+        </div>
+    </div>
+
+    <!-- Controls Section -->
+    <div class="controls-section">
+        <div class="control-group">
+            <label for="storeSelect" class="control-label">Select Store ID:</label>
+            <select id="storeSelect" class="form-select"></select>
+        </div>
+        
+        <div class="control-group">
+            <label for="productSelect" class="control-label">Select Product ID:</label>
+            <select id="productSelect" class="form-select"></select>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-section">
+        <div class="chart-header">
+            <h3>📊 Predicted Sales with Expected Range</h3>
+        </div>
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Summary Table Section -->
+    <div class="table-section">
+        <div class="table-header">
+            <h3>📋 Forecast Summary Table</h3>
+        </div>
+        <div class="table-container">
+            <table class="forecast-table">
+                <thead>
+                    <tr>
+                        <th>Store ID</th>
+                        <th>Month</th>
+                        <th>Predicted Sales</th>
+                        <th>Minimum Expected</th>
+                        <th>Maximum Expected</th>
+                        <th>Is Hot Product</th>
+                        <th>Seasonal Spike</th>
+                    </tr>
+                </thead>
+                <tbody id="forecastTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+<script>
+let allData = [];
+let chartInstance;
+let storeSelectInstance;
+let productSelectInstance;
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    loadSalesData();
+});
+
+function loadSalesData() {
+    fetch("/sales-data")
+        .then((res) => res.json())
+        .then((data) => {
+            allData = data;
+            initializeSelectors();
+            updateDisplay();
+        })
+        .catch(error => {
+            console.error('Error loading sales data:', error);
+        });
+}
+
+function initializeSelectors() {
+    // Sort Store IDs and Product IDs in ascending order
+    const storeIds = [...new Set(allData.map((d) => d["Store ID"]))].sort((a, b) => {
+        return parseInt(a) - parseInt(b); // Numeric sort
+    });
+    
+    const productIds = [...new Set(allData.map((d) => d["Product ID"]))].sort((a, b) => {
+        return parseInt(a) - parseInt(b); // Numeric sort
+    });
+
+    console.log("Sorted Store IDs:", storeIds);
+    console.log("Sorted Product IDs:", productIds);
+
+    const storeSelect = document.getElementById("storeSelect");
+    const productSelect = document.getElementById("productSelect");
+
+    // Clear existing options
+    storeSelect.innerHTML = '<option value="">Select Store</option>';
+    productSelect.innerHTML = '<option value="">Select Product</option>';
+
+    // Populate store options in sorted order
+    storeIds.forEach((id) => {
+        const opt = new Option(`Store ${id}`, id);
+        storeSelect.add(opt);
+    });
+
+    // Populate product options in sorted order
+    productIds.forEach((id) => {
+        const opt = new Option(`Product ${id}`, id);
+        productSelect.add(opt);
+    });
+
+    // Initialize Tom Select with sorting
+    storeSelectInstance = new TomSelect("#storeSelect", {
+        sortField: { 
+            field: "value", 
+            direction: "asc" 
+        },
+        placeholder: "Choose a Store",
+        onChange: function(value) {
+            updateDisplay();
+        }
+    });
+
+    productSelectInstance = new TomSelect("#productSelect", {
+        sortField: { 
+            field: "value", 
+            direction: "asc" 
+        },
+        placeholder: "Choose a Product",
+        onChange: function(value) {
+            updateDisplay();
+        }
+    });
+
+    // Set default values to first available options
+    if (storeIds.length > 0) {
+        storeSelectInstance.setValue(storeIds[0]);
+    }
+    if (productIds.length > 0) {
+        productSelectInstance.setValue(productIds[0]);
+    }
+}
+
+function updateDisplay() {
+    const store = storeSelectInstance ? storeSelectInstance.getValue() : "";
+    const product = productSelectInstance ? productSelectInstance.getValue() : "";
+
+    if (!store || !product) {
+        document.getElementById("storeProductTitle").innerText = "📦 Store - | Product -";
+        return;
+    }
+
+    // Update header
+    document.getElementById("storeProductTitle").innerText = `📦 Store ${store} | Product ${product}`;
+
+    // Filter data
+    const filtered = allData.filter(
+        (d) => d["Store ID"] == store && d["Product ID"] == product
+    );
+
+    if (!filtered.length) {
+        console.warn('No data found for selected store and product');
+        return;
+    }
+
+    updateChart(filtered, store, product);
+    updateForecastTable(filtered);
+}
+
+function updateChart(data, store, product) {
+    const ctx = document.getElementById("salesChart").getContext("2d");
+    
+    // Prepare chart data
+    const months = ['Oct']; 
+    const predictions = [parseFloat(data[0]?.["Prediction"]) || 466];
+    const lowerEstimates = [parseFloat(data[0]?.["Lower"]) || 437];
+    const upperEstimates = [parseFloat(data[0]?.["Upper"]) || 496];
+
+    // Destroy existing chart
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    // Create new chart
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'Prediction',
+                    data: predictions,
+                    borderColor: '#2563eb',
+                    backgroundColor: '#2563eb',
+                    pointBackgroundColor: '#2563eb',
+                    pointBorderColor: '#2563eb',
+                    pointRadius: 8,
+                    pointHoverRadius: 10,
+                    fill: false,
+                    tension: 0.1,
+                    borderWidth: 3
+                },
+                {
+                    label: 'Expected Range',
+                    data: upperEstimates,
+                    borderColor: 'rgba(37, 99, 235, 0.3)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                    fill: '+1',
+                    pointRadius: 0,
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                },
+                {
+                    label: 'Range Lower',
+                    data: lowerEstimates,
+                    borderColor: 'rgba(37, 99, 235, 0.3)',
+                    backgroundColor: 'rgba(37, 99, 235, 0.15)',
+                    fill: false,
+                    pointRadius: 0,
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: `Sales Forecast - Store ${store}, Product ${product}`,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    },
+                    color: '#374151',
+                    padding: 20
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        filter: function(legendItem, chartData) {
+                            return legendItem.text !== 'Range Lower';
+                        },
+                        usePointStyle: true,
+                        padding: 20,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#2563eb',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                        title: function(context) {
+                            return `${context[0].label}: ${predictions[0].toFixed(0)} units`;
+                        },
+                        label: function(context) {
+                            if (context.datasetIndex === 0) {
+                                return `Expected Sales: ${context.parsed.y.toFixed(0)} units`;
+                            }
+                            return null;
+                        },
+                        footer: function(context) {
+                            return [`Range: ${lowerEstimates[0].toFixed(0)} - ${upperEstimates[0].toFixed(0)} units`];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#374151'
+                    },
+                    grid: {
+                        display: true,
+                        color: 'rgba(0,0,0,0.1)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Sales Quantity',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        color: '#374151'
+                    },
+                    beginAtZero: false,
+                    grid: {
+                        display: true,
+                        color: 'rgba(0,0,0,0.1)',
+                        drawBorder: false
+                    },
+                    ticks: {
+                        color: '#6b7280',
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            }
+        }
+    });
+}
+
+function updateForecastTable(data) {
+    const tbody = document.getElementById("forecastTableBody");
+    tbody.innerHTML = "";
+
+    data.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        
+        // Determine if it's a hot product (based on prediction value)
+        const prediction = parseFloat(row["Prediction"]);
+        const isHotProduct = prediction > 400 ? "Hot product" : "Normal product";
+        
+        // Determine seasonal spike
+        const seasonalSpike = "Christmas";
+        
+        tr.innerHTML = `
+            <td><strong>${row["Store ID"]}</strong></td>
+            <td><strong>Oct</strong></td>
+            <td><strong>${prediction.toFixed(4)}</strong></td>
+            <td>${parseFloat(row["Lower"]).toFixed(4)}</td>
+            <td>${parseFloat(row["Upper"]).toFixed(2)}</td>
+            <td><span class="badge ${isHotProduct === 'Hot product' ? 'hot-product' : 'normal-product'}">${isHotProduct}</span></td>
+            <td><span class="badge seasonal">${seasonalSpike}</span></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+</script>
+
+<link rel="stylesheet" href="/static/css/sales-predictions.css">
+{% endblock %}
