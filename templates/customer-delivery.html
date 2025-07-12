@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 {% extends "base.html" %} {% block content %}
-=======
-{% extends "base.html" %}
-
-{% block content %}
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
 <div class="container-fluid py-4">
   <div class="row g-4">
 
@@ -39,17 +33,12 @@
         <div class="card-body">
           <div id="preference-content" class="mt-3">
             <div class="btn-group w-100" id="delivery-type-toggle">
-<<<<<<< HEAD
               <button class="btn btn-outline-primary" id="same-day-btn">
                 Same-Day
               </button>
               <button class="btn btn-outline-secondary" id="standard-btn">
                 Standard
               </button>
-=======
-              <button class="btn btn-outline-primary" id="same-day-btn">Same-Day</button>
-              <button class="btn btn-outline-secondary" id="standard-btn">Standard</button>
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
             </div>
           </div>
         </div>
@@ -65,7 +54,6 @@
               <select id="zone-select" class="form-select"></select>
             </div>
             <div class="mb-2">
-<<<<<<< HEAD
               <label for="distance-input" class="form-label"
                 >Distance (km)</label
               >
@@ -76,10 +64,6 @@
                 min="0"
                 step="0.1"
               />
-=======
-              <label for="distance-input" class="form-label">Distance (km)</label>
-              <input type="number" id="distance-input" class="form-control" min="0" step="0.1" />
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
             </div>
             <button type="submit" class="btn btn-primary w-100">
               Calculate
@@ -92,7 +76,6 @@
 
     <!-- Delivery Zones Map -->
     <div class="col-lg-4">
-<<<<<<< HEAD
       <div class="Container py-5 card h-80" style="margin-top: 19%">
         <div class="card-header">Delivery Zones</div>
         <div class="card-body">
@@ -100,13 +83,6 @@
             id="delivery-map"
             style="height: 250px; border-radius: 8px"
           ></div>
-=======
-      <div class="py-5 card h-100">
-        <div class="card-header">Delivery Zones</div>
-        <div class="card-body">
-          <!-- ✅ Latest fixed map height -->
-          <div id="delivery-map" style="height: 600px; width: 100%; border-radius: 8px;"></div>
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
         </div>
       </div>
 
@@ -132,18 +108,10 @@
 
   </div>
 </div>
-<<<<<<< HEAD
 {% endblock %} {% block additional_js %}
 
 <link rel="stylesheet" href="/static/css/customer_delivery.css" />
 
-=======
-{% endblock %}
-
-{% block additional_js %}
-<link rel="stylesheet" href="/static/css/customer_delivery.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="/static/customer_delivery.js"></script>
 {% endblock %}

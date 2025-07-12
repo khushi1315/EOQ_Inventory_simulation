@@ -2,7 +2,6 @@
 .card {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-<<<<<<< HEAD
   padding: 1rem;
   background-color: #fff;
   overflow: hidden; /* helps prevent map overflow */
@@ -45,42 +44,3 @@
 .card-header{
   padding-top: 1px;
 } */
-=======
-  height: auto; /* Let each card decide its height */
-}
-
-.badge {
-  font-size: 0.95em;
-  padding: 0.5em 0.7em;
-}
-
-.btn-group .btn {
-  width: 50%;
-}
-
-/* ✅ Map stays 600px */
-#delivery-map {
-  height: 600px;
-  width: 100%;
-  border-radius: 8px;
-  display: block;
-  z-index: 1;
-}
-
-/* ✅ Apply fixed height only to non-map card bodies */
-.card-body {
-  overflow: auto;
-}
-
-.card-body:not(:has(#delivery-map)) {
-  height: 300px;
-}
-
-/* Optional spacing on small screens */
-@media (max-width: 992px) {
-  .card {
-    margin-bottom: 20px;
-  }
-}
-
->>>>>>> 2a9d86865d697b143c9d8d90dd5efcc367a76b66
