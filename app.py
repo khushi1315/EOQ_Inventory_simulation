@@ -1,5 +1,3 @@
-
-
 from flask import Flask, render_template, jsonify
 from EOQ_model import load_and_preprocess_data, train_model, simulate_inventory, prepare_inventory,compute_eoq  
 import pandas as pd
